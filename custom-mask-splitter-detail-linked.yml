@@ -1,0 +1,14 @@
+plugin:
+  name: custom-mask-splitter-detail-linked
+  version: 1.0
+  url: https://github.com/programmfabrik/custom-mask-splitter-detail-linked
+  displayname:
+    en-US: Detail Linked custom mask splitter
+  info:
+    en-US: Custom mask splitter that shows a list of all objects that reference the object shown in the detail
+  server:
+    api-version:
+      require: 1
+  webfrontend:
+    url: custom-mask-splitter-detail-linked.js
+    l10n: l10n/
