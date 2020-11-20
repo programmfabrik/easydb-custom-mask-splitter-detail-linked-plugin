@@ -11,7 +11,7 @@ INSTALL_FILES = \
 	$(WEB)/l10n/es-ES.json \
 	$(WEB)/l10n/it-IT.json \
 	$(JS) \
-	CustomDataTypeLink.config.yml
+	custom-mask-splitter-detail-linked.config.yml
 
 COFFEE_FILES = src/webfrontend/DetailLinkedMaskSplitter.coffee
 
