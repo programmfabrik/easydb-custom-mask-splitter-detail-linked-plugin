@@ -7,5 +7,5 @@ detail.linked.mask.splitter.options.mode,Mode,Mode,Mode,Mode
 detail.linked.mask.splitter.options.mode.standard,Standard,Standard,Standard,Standard
 detail.linked.mask.splitter.options.mode.short,Short,Short,Short,Short
 detail.linked.mask.splitter.options.mode.text,Text,Text,Text,Text
-detail.linked.mask.splitter.options.tables,Linked fields,Linked fields,Linked fields,Linked fields
+detail.linked.mask.splitter.options.objecttypes,Objecttypes,Objecttypes,Objecttypes,Objecttypes
 detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated)

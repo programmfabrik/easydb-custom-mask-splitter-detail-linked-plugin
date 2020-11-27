@@ -11,4 +11,5 @@ plugin:
       require: 1
   webfrontend:
     url: custom-mask-splitter-detail-linked.js
+    css: custom-mask-splitter-detail-linked.css
     l10n: l10n/

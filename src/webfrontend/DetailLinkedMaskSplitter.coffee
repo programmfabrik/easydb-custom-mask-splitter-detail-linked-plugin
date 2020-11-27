@@ -3,12 +3,12 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 	@NAVIGATION_LIMIT = 10
 
 	getOptions: ->
-		tables = @__getTablesWithLinkToTable(@maskEditor.current_mask.table.table_id)
-		tablesOptions = []
-		for table in tables
-			tablesOptions.push
-				value: table.name
-				text: table._name_localized
+		objecttypes = @__getObjecttypesWithLinkToTable(@maskEditor.current_mask.table.table_id)
+		objecttypeOptions = []
+		for objecttype in objecttypes
+			objecttypeOptions.push
+				value: objecttype.name
+				text: objecttype._name_localized
 
 		options = [
 			form:
@@ -27,17 +27,17 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 			]
 		,
 			form:
-				label:  $$("detail.linked.mask.splitter.options.tables")
+				label:  $$("detail.linked.mask.splitter.options.objecttypes")
 			type: CUI.Options
-			name: "tables"
-			options: tablesOptions
+			name: "objecttypes"
+			options: objecttypeOptions
 			onDataInit: (_, data) =>
-				if not CUI.util.isUndef(data.tables)
+				if not CUI.util.isUndef(data.objecttypes)
 					return
-				data.tables = []
-				tables = @__getTablesWithLinkToTable(@maskEditor.current_mask.table.table_id)
-				for table in tables
-					data.tables.push(table.name)
+				data.objecttypes = []
+				objecttypes = @__getObjecttypesWithLinkToTable(@maskEditor.current_mask.table.table_id)
+				for table in objecttypes
+					data.objecttypes.push(table.name)
 				return
 		]
 		return options
@@ -58,12 +58,12 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 		dataOptions = @getDataOptions()
 		idTable = ez5.schema.CURRENT._objecttype_by_name[objecttype].table_id
-		linkedFieldNames = @__getLinkedFieldNames(idTable, dataOptions.tables)
+		linkedFieldNames = @__getLinkedFieldNames(idTable, dataOptions.objecttypes)
 
 		if linkedFieldNames.length == 0
 			return
 
-		mainContent = CUI.dom.div()
+		mainContent = CUI.dom.div("ez5-detail-linked-mask-splitter-content")
 		spinner = new LocaLabel(loca_key: "detail.linked.mask.splitter.detail.spinner")
 		CUI.dom.append(mainContent, spinner)
 
@@ -84,8 +84,10 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 				content = @__renderObjects(objecttype, resultObjects, dataOptions.mode)
 				CUI.dom.append(mainContent, content)
 			return
-		).fail(=>
-			# TODO: What happens when there is an error? should we show an error message?
+		).fail((err) =>
+			# Should we do something else when there is an error?
+			console.error("DetailLinkedMaskSplitter :: Error when fetching objects.", err)
+			CUI.dom.empty(mainContent)
 		)
 
 		return mainContent
@@ -109,8 +111,14 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 			if toIndex > length
 				toIndex = length
 
+			if mode == "short"
+				# In short mode we add a container div like the nested does and add all objects in it.
+				condensedContainer = CUI.dom.div("ez5-nested--condensed ez5-nested--single-column")
+				CUI.dom.append(objectsContent, condensedContainer)
+
 			for index in [offset...toIndex]
 				resultObject = resultObjects[index]
+
 				div = switch mode
 					when "short"
 						resultObject.renderCardLinkedObjectShort()
@@ -118,7 +126,17 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 						resultObject.renderTextDetail()
 					when "standard"
 						resultObject.renderCardLinkedObjectStandard()
-				CUI.dom.append(objectsContent, div)
+
+				# It is necessary to add some classes to make them look like they are linked objects.
+				if mode == "short"
+					itemDiv = CUI.dom.div("ez5-nested-fields")
+					itemField = CUI.dom.div("ez5-field")
+					CUI.dom.append(itemDiv, itemField)
+					CUI.dom.append(itemField, div)
+					CUI.dom.append(condensedContainer, itemDiv)
+				else
+					CUI.dom.addClass(div, "ez5-linked-object linked-object-popover")
+					CUI.dom.append(objectsContent, div)
 
 			if navigationToolbar
 				navigationToolbar.update(count: length, offset: offset, limit: limit)
@@ -136,12 +154,18 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 		return content
 
-	__getLinkedFieldNames: (idTable, tables = []) ->
+	__getLinkedFieldNames: (idTable, objecttypes = []) ->
 		linkedFieldNames = []
 		for table in ez5.schema.CURRENT.tables
 			for column in table.columns
-				if table.name not in tables
+				if table.owned_by
+					objecttype = table.owned_by.other_table_name_hint
+				else
+					objecttype = table.name
+
+				if objecttype not in objecttypes
 					continue
+
 				if not @__hasColumnLinkToTable(column, idTable)
 					continue
 				fieldName = "#{table.name}.#{column.name}._global_object_id"
@@ -161,14 +185,22 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 					in: [globalObjectId]
 				]
 
-	__getTablesWithLinkToTable: (idTable) ->
-		tables = []
-		for table in ez5.schema.CURRENT.tables
+	__getObjecttypesWithLinkToTable: (idTable) ->
+		objecttypes = []
+		for table in ez5.schema.HEAD.tables
 			for column in table.columns
 				if @__hasColumnLinkToTable(column, idTable)
-					tables.push(table)
+					if table.owned_by
+						objecttypeName = table.owned_by.other_table_name_hint
+					else
+						objecttypeName = table.name
+
+					objecttype = ez5.schema.HEAD._objecttype_by_name[objecttypeName]
+					if objecttype in objecttypes
+						break
+					objecttypes.push(objecttype)
 					break
-		return tables
+		return objecttypes
 
 	__hasColumnLinkToTable: (column, idTable) ->
 		return column.type == "link" and column._foreign_key.referenced_table.table_id == idTable
