@@ -81,7 +81,7 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 				objectsByObjecttype[objecttype].push(resultObject)
 
 			for objecttype, resultObjects of objectsByObjecttype
-				content = @__renderObjects(objecttype, resultObjects, dataOptions.mode)
+				content = @__renderObjects(objecttype, resultObjects, dataOptions.mode, opts)
 				CUI.dom.append(mainContent, content)
 			return
 		).fail((err) =>
@@ -92,7 +92,7 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 		return mainContent
 
-	__renderObjects: (objecttype, resultObjects, mode) ->
+	__renderObjects: (objecttype, resultObjects, mode, opts = {}) ->
 		objecttypeHeader = CUI.dom.div("ez5-field-block-header")
 		objectsContent = CUI.dom.div("ez5-field-block-content")
 		CUI.dom.append(objecttypeHeader, $$("detail.linked.mask.splitter.header.objecttype.title", objecttype: objecttype))
@@ -135,8 +135,20 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 					CUI.dom.append(itemField, div)
 					CUI.dom.append(condensedContainer, itemDiv)
 				else
-					CUI.dom.addClass(div, "ez5-linked-object linked-object-popover")
-					CUI.dom.append(objectsContent, div)
+					horizontalLayout = new CUI.HorizontalLayout
+						maximize_horizontal: true
+						maximize_vertical: false
+						class: "ez5-linked-object-detail ez5-linked-object linked-object-popover"
+						right: {}
+					horizontalLayout.replace(div, "center")
+
+					if opts.detail
+						detailTools = resultObject.getDetailTools
+							detail: opts.detail
+							getElement: => horizontalLayout
+						horizontalLayout.replace(Toolbox.getFlyoutButtonbar(detailTools, appearance: "flat"), "right")
+
+					CUI.dom.append(objectsContent, horizontalLayout)
 
 			if navigationToolbar
 				navigationToolbar.update(count: length, offset: offset, limit: limit)
