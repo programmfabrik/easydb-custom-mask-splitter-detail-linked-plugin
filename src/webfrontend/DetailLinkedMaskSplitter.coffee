@@ -48,6 +48,9 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		return defaultOptions
 
 	renderField: (opts = {}) ->
+		if opts.mode != "detail"
+			return
+
 		globalObjectId = opts.top_level_data?._global_object_id
 		if not globalObjectId
 			return
@@ -95,7 +98,9 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 	__renderObjects: (objecttype, resultObjects, mode, opts = {}) ->
 		objecttypeHeader = CUI.dom.div("ez5-field-block-header")
 		objectsContent = CUI.dom.div("ez5-field-block-content")
-		CUI.dom.append(objecttypeHeader, $$("detail.linked.mask.splitter.header.objecttype.title", objecttype: objecttype))
+
+		label = new CUI.Label(text: $$("detail.linked.mask.splitter.header.objecttype.title", objecttype: objecttype))
+		CUI.dom.append(objecttypeHeader, label)
 
 		limit = ez5.DetailLinkedMaskSplitter.NAVIGATION_LIMIT
 		length = resultObjects.length
