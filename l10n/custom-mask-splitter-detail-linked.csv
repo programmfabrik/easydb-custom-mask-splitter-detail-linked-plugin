@@ -1,11 +1,11 @@
 key,de-DE,en-US,it-IT,es-ES
-detail.linked.mask.splitter.name,Detail Linked,Detail Linked,Detail Linked,Detail Linked
-detail.linked.mask.splitter.title|text,Detail Linked,Detail Linked,Detail Linked,Detail Linked
-detail.linked.mask.splitter.detail.spinner|text,Loading...,Loading...,Loading...,Loading...
+detail.linked.mask.splitter.name,Anzeige von Verlinkungen,Display of references,Display of references,Display of references
+detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,Display of references,Display of references,Display of references
+detail.linked.mask.splitter.detail.spinner|text,Lädt...,Loading...,Loading...,Loading...
 detail.linked.mask.splitter.detail.spinner|icon,spinner,spinner,spinner,spinner
-detail.linked.mask.splitter.options.mode,Mode,Mode,Mode,Mode
+detail.linked.mask.splitter.options.mode,Anzeigeart,Mode,Mode,Mode
 detail.linked.mask.splitter.options.mode.standard,Standard,Standard,Standard,Standard
-detail.linked.mask.splitter.options.mode.short,Short,Short,Short,Short
+detail.linked.mask.splitter.options.mode.short,Kurz,Short,Short,Short
 detail.linked.mask.splitter.options.mode.text,Text,Text,Text,Text
-detail.linked.mask.splitter.options.objecttypes,Objecttypes,Objecttypes,Objecttypes,Objecttypes
+detail.linked.mask.splitter.options.objecttypes,Objekttypen,Objecttypes,Objecttypes,Objecttypes
 detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated)
