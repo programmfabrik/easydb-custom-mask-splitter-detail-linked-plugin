@@ -175,10 +175,7 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		linkedFieldNames = []
 		for table in ez5.schema.CURRENT.tables
 			for column in table.columns
-				if table.owned_by
-					objecttype = table.owned_by.other_table_name_hint
-				else
-					objecttype = table.name
+				objecttype = @__getRootObjecttype(table)?.name
 
 				if objecttype not in objecttypes
 					continue
@@ -187,7 +184,8 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 					continue
 				fieldName = "#{table.name}.#{column.name}._global_object_id"
 				if table.owned_by
-					fieldName = "#{table.owned_by.other_table_name_hint}._nested:#{fieldName}"
+					nestedName = @__getNestedLinkedFieldName(table)
+					fieldName = "#{nestedName}#{fieldName}"
 				linkedFieldNames.push(fieldName)
 		return linkedFieldNames
 
@@ -207,17 +205,32 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		for table in ez5.schema.HEAD.tables
 			for column in table.columns
 				if @__hasColumnLinkToTable(column, idTable)
-					if table.owned_by
-						objecttypeName = table.owned_by.other_table_name_hint
-					else
-						objecttypeName = table.name
-
-					objecttype = ez5.schema.HEAD._objecttype_by_name[objecttypeName]
+					objecttype = @__getRootObjecttype(table)
 					if objecttype in objecttypes
 						break
 					objecttypes.push(objecttype)
 					break
 		return objecttypes
+
+	__getNestedLinkedFieldName: (table) ->
+		if not table
+			return
+
+		if not table.owned_by
+			return ""
+
+		ownerTable = ez5.schema.HEAD._table_by_id[table.owned_by.other_table_id]
+		return @__getNestedLinkedFieldName(ownerTable) + ownerTable.name + "._nested:"
+
+	__getRootObjecttype: (table) ->
+		if not table
+			return
+
+		if table.owned_by
+			ownerTable = ez5.schema.HEAD._table_by_id[table.owned_by.other_table_id]
+			return @__getRootObjecttype(ownerTable)
+		else
+			return table
 
 	__hasColumnLinkToTable: (column, idTable) ->
 		return column.type == "link" and column._foreign_key.referenced_table.table_id == idTable
