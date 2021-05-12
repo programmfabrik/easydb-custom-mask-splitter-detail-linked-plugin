@@ -191,9 +191,16 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 	__searchByLinkedFieldNames: (linkedFieldNames, globalObjectId, mode) ->
 		mode = if mode == "text" then "long" else mode
+
+		objecttypes = []
+
+		for linkedFieldName in linkedFieldNames
+			objecttypes.push(linkedFieldName.substring(0, linkedFieldName.indexOf(".")))
+
 		return ez5.api.search
 			json_data:
 				format: mode
+				objecttypes: objecttypes
 				search: [
 					type: "in"
 					fields: linkedFieldNames
