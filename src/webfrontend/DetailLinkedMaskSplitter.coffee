@@ -175,7 +175,7 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		linkedFieldNames = []
 		for table in ez5.schema.CURRENT.tables
 			for column in table.columns
-				objecttype = @__getRootObjecttype(table)?.name
+				objecttype = @__getRootObjecttype(table, "CURRENT")?.name
 
 				if objecttype not in objecttypes
 					continue
@@ -229,12 +229,12 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		ownerTable = ez5.schema.HEAD._table_by_id[table.owned_by.other_table_id]
 		return @__getNestedLinkedFieldName(ownerTable) + ownerTable.name + "._nested:"
 
-	__getRootObjecttype: (table) ->
+	__getRootObjecttype: (table, schemaVersion = "HEAD") ->
 		if not table
 			return
 
 		if table.owned_by
-			ownerTable = ez5.schema.HEAD._table_by_id[table.owned_by.other_table_id]
+			ownerTable = ez5.schema[schemaVersion]._table_by_id[table.owned_by.other_table_id]
 			return @__getRootObjecttype(ownerTable)
 		else
 			return table
