@@ -1,7 +1,7 @@
 plugin:
-  name: custom-mask-splitter-detail-linked
+  name: easydb-custom-mask-splitter-detail-linked-plugin
   version: 1.0
-  url: https://github.com/programmfabrik/custom-mask-splitter-detail-linked
+  url: https://github.com/programmfabrik/easydb-custom-mask-splitter-detail-linked-plugin
   displayname:
     en-US: Detail Linked custom mask splitter
   info:
