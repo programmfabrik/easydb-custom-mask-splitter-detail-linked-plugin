@@ -1,4 +1,5 @@
 PLUGIN_NAME = custom-mask-splitter-detail-linked
+PLUGIN_PATH = easydb-custom-mask-splitter-detail-linked-plugin
 
 EASYDB_LIB = easydb-library
 
