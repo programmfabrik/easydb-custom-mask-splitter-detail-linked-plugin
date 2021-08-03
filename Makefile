@@ -15,7 +15,7 @@ INSTALL_FILES = \
 	$(WEB)/l10n/it-IT.json \
 	$(JS) \
 	$(CSS) \
-	custom-mask-splitter-detail-linked.yml
+	manifest.yml
 
 COFFEE_FILES = src/webfrontend/DetailLinkedMaskSplitter.coffee
 SCSS_FILES = src/webfrontend/scss/detail-linked-mask-splitter.scss
