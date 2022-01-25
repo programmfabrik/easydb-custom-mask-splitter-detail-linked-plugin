@@ -235,7 +235,7 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 		if table.owned_by
 			ownerTable = ez5.schema[schemaVersion]._table_by_id[table.owned_by.other_table_id]
-			return @__getRootObjecttype(ownerTable)
+			return @__getRootObjecttype(ownerTable, schemaVersion)
 		else
 			return table
 
