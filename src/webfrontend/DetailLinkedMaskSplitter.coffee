@@ -173,20 +173,29 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 	__getLinkedFieldNames: (idTable, objecttypes = []) ->
 		linkedFieldNames = []
-		for table in ez5.schema.CURRENT.tables
-			for column in table.columns
-				objecttype = @__getRootObjecttype(table, "CURRENT")?.name
 
-				if objecttype not in objecttypes
-					continue
+		objecttypeManager = new ObjecttypeManager()
+		objecttypeManager.addObjecttypes((table, mask) =>
+			if table.name() not in objecttypes
+				return false
+			return mask.schema.is_preferred
+		)
 
-				if not @__hasColumnLinkToTable(column, idTable)
-					continue
-				fieldName = "#{table.name}.#{column.name}._global_object_id"
-				if table.owned_by
-					nestedName = @__getNestedLinkedFieldName(table)
-					fieldName = "#{nestedName}#{fieldName}"
-				linkedFieldNames.push(fieldName)
+		for field in objecttypeManager.getAllFields()
+			columnSchema = field.ColumnSchema
+
+			if not @__hasColumnLinkToTable(columnSchema, idTable)
+				continue
+
+			if not @__isFieldSearchable(field)
+				continue
+
+			table = field.table.schema
+			fieldName = "#{table.name}.#{columnSchema.name}._global_object_id"
+			if table.owned_by
+				nestedName = @__getNestedLinkedFieldName(table)
+				fieldName = "#{nestedName}#{fieldName}"
+			linkedFieldNames.push(fieldName)
 		return linkedFieldNames
 
 	__searchByLinkedFieldNames: (linkedFieldNames, globalObjectId, mode) ->
@@ -209,14 +218,21 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 	__getObjecttypesWithLinkToTable: (idTable) ->
 		objecttypes = []
-		for table in ez5.schema.HEAD.tables
-			for column in table.columns
-				if @__hasColumnLinkToTable(column, idTable)
-					objecttype = @__getRootObjecttype(table)
-					if objecttype in objecttypes
-						break
-					objecttypes.push(objecttype)
+
+		objecttypeManager = new ObjecttypeManager(version: "HEAD")
+		objecttypeManager.addObjecttypes((table, mask) =>
+			return mask.schema.is_preferred
+		)
+
+		for field in objecttypeManager.getAllFields()
+			columnSchema = field.ColumnSchema
+			if @__hasColumnLinkToTable(columnSchema, idTable) and @__isFieldSearchable(field)
+				objecttype = field.getMainMask().table.schema
+				if objecttype in objecttypes
 					break
+				objecttypes.push(objecttype)
+				break
+
 		return objecttypes
 
 	__getNestedLinkedFieldName: (table) ->
@@ -229,18 +245,15 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		ownerTable = ez5.schema.CURRENT._table_by_id[table.owned_by.other_table_id]
 		return @__getNestedLinkedFieldName(ownerTable) + ownerTable.name + "._nested:"
 
-	__getRootObjecttype: (table, schemaVersion = "HEAD") ->
-		if not table
-			return
-
-		if table.owned_by
-			ownerTable = ez5.schema[schemaVersion]._table_by_id[table.owned_by.other_table_id]
-			return @__getRootObjecttype(ownerTable, schemaVersion)
-		else
-			return table
-
 	__hasColumnLinkToTable: (column, idTable) ->
-		return column.type == "link" and column._foreign_key.referenced_table.table_id == idTable
+		return column and column.type == "link" and column._foreign_key.referenced_table.table_id == idTable
+
+	__isFieldSearchable: (field) ->
+		if not field
+			return true
+
+		fatherField = field.getFatherField()
+		return @__isFieldSearchable(fatherField) and field.isVisible("expert")
 
 	isSimpleSplit: ->
 		return true
