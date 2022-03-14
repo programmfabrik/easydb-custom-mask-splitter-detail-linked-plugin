@@ -229,9 +229,8 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 			if @__hasColumnLinkToTable(columnSchema, idTable) and @__isFieldSearchable(field)
 				objecttype = field.getMainMask().table.schema
 				if objecttype in objecttypes
-					break
+					continue
 				objecttypes.push(objecttype)
-				break
 
 		return objecttypes
 
