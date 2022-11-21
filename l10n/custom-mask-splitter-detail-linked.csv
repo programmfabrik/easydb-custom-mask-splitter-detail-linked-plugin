@@ -1,11 +1,11 @@
-key,de-DE,en-US,it-IT,es-ES
-detail.linked.mask.splitter.name,Anzeige von Verlinkungen,Display of references,Display of references,Display of references
-detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,Display of references,Display of references,Display of references
-detail.linked.mask.splitter.detail.spinner|text,Lädt...,Loading...,Loading...,Loading...
-detail.linked.mask.splitter.detail.spinner|icon,spinner,spinner,spinner,spinner
-detail.linked.mask.splitter.options.mode,Anzeigeart,Mode,Mode,Mode
-detail.linked.mask.splitter.options.mode.standard,Standard,Standard,Standard,Standard
-detail.linked.mask.splitter.options.mode.short,Kurz,Short,Short,Short
-detail.linked.mask.splitter.options.mode.text,Text,Text,Text,Text
-detail.linked.mask.splitter.options.objecttypes,Objekttypen,Object types,Objecttypes,Objecttypes
-detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated)
+key,de-DE,en-US,da-DK,fi-FI,sv-SE,it-IT,es-ES
+detail.linked.mask.splitter.detail.spinner|icon,spinner,spinner,spinner,spinner,spinner,spinner,spinner
+detail.linked.mask.splitter.detail.spinner|text,Lädt...,Loading...,Loading...,Ladataan…,Loading...,Loading...,Loading...
+detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (luotu automaattisesti),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated)
+detail.linked.mask.splitter.name,Anzeige von Verlinkungen,Display of references,Display of references,Linkkien näyttö,Display of references,Display of references,Display of references
+detail.linked.mask.splitter.options.mode,Anzeigeart,Mode,Mode,Näyttötapa,Mode,Mode,Mode
+detail.linked.mask.splitter.options.mode.short,Kurz,Short,Short,Lyhyt,Short,Short,Short
+detail.linked.mask.splitter.options.mode.standard,Standard,Standard,Standard,Oletus,Standard,Standard,Standard
+detail.linked.mask.splitter.options.mode.text,Text,Text,Text,Teksti,Text,Text,Text
+detail.linked.mask.splitter.options.objecttypes,Objekttypen,Object types,Object types,Objektityypit,Object types,Objecttypes,Objecttypes
+detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,Display of references,Display of references,Linkkien näyttö,Display of references,Display of references,Display of references
