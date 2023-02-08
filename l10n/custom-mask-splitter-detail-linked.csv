@@ -1,7 +1,7 @@
 key,de-DE,en-US,da-DK,fi-FI,sv-SE,it-IT,es-ES
 detail.linked.mask.splitter.detail.spinner|icon,spinner,spinner,spinner,spinner,spinner,spinner,spinner
 detail.linked.mask.splitter.detail.spinner|text,Lädt...,Loading...,Loading...,Ladataan…,Laddar...,Loading...,Loading...
-detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated),%(objecttype)s (luotu automaattisesti),%(objecttype)s (automatiskt genererad),%(objecttype)s (auto-generated),%(objecttype)s (auto-generated)
+detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s,%(objecttype)s,%(objecttype)s,%(objecttype)s (luotu automaattisesti),%(objecttype)s (automatiskt genererad),%(objecttype)s,%(objecttype)s
 detail.linked.mask.splitter.name,Anzeige von Verlinkungen,Display of references,Display of references,Linkkien näyttö,Visning av länkar,Display of references,Display of references
 detail.linked.mask.splitter.options.mode,Anzeigeart,Mode,Mode,Näyttötapa,Visningstyp,Mode,Mode
 detail.linked.mask.splitter.options.mode.short,Kurz,Short,Short,Lyhyt,Kort,Short,Short
