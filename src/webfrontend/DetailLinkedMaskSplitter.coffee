@@ -76,6 +76,16 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 				return
 
 			objectsByObjecttype = {}
+
+			# Order the objects alphabetically by the standard text.
+			data.objects.sort( (a,b) =>
+				standardNameA = ez5.loca.getBestFrontendValue(a._standard?["1"]?.text)
+				standardNameB = ez5.loca.getBestFrontendValue(b._standard?["1"]?.text)
+				if standardNameA and standardNameB
+					return standardNameA.localeCompare(standardNameB)
+				return 0
+			)
+			console.log data.objects
 			for object in data.objects
 				resultObject = new ResultObject().setData(object)
 				objecttype = resultObject.objecttypeLocalized()
