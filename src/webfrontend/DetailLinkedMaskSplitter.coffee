@@ -254,6 +254,9 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		ownerTable = ez5.schema.CURRENT._table_by_id[table.owned_by.other_table_id]
 		return @__getNestedLinkedFieldName(ownerTable) + ownerTable.name + "._nested:"
 
+	hasContent: () ->
+		return true
+
 	__hasColumnLinkToTable: (column, idTable) ->
 		return column and column.type == "link" and column._foreign_key.referenced_table.table_id == idTable
 
