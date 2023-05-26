@@ -1,11 +1,11 @@
-key,de-DE,en-US,da-DK,fi-FI,sv-SE,it-IT,es-ES
-detail.linked.mask.splitter.detail.spinner|icon,spinner,spinner,spinner,spinner,spinner,spinner,spinner
-detail.linked.mask.splitter.detail.spinner|text,Lädt...,Loading...,Loading...,Ladataan…,Laddar...,Loading...,Loading...
-detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s,%(objecttype)s,%(objecttype)s,%(objecttype)s (luotu automaattisesti),%(objecttype)s (automatiskt genererad),%(objecttype)s,%(objecttype)s
-detail.linked.mask.splitter.name,Anzeige von Verlinkungen,Display of references,Display of references,Linkkien näyttö,Visning av länkar,Display of references,Display of references
-detail.linked.mask.splitter.options.mode,Anzeigeart,Mode,Mode,Näyttötapa,Visningstyp,Mode,Mode
-detail.linked.mask.splitter.options.mode.short,Kurz,Short,Short,Lyhyt,Kort,Short,Short
-detail.linked.mask.splitter.options.mode.standard,Standard,Standard,Standard,Oletus,Standard,Standard,Standard
-detail.linked.mask.splitter.options.mode.text,Text,Text,Text,Teksti,Text,Text,Text
-detail.linked.mask.splitter.options.objecttypes,Objekttypen,Object types,Object types,Objektityypit,Objekttyper,Objecttypes,Objecttypes
-detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,Display of references,Display of references,Linkkien näyttö,Visning av länkar,Display of references,Display of references
+key,de-DE,R,en-US,R,da-DK,R,fi-FI,R,sv-SE,R,fr-FR,R,it-IT,R,es-ES,R
+detail.linked.mask.splitter.detail.spinner|icon,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,,FALSE,spinner,FALSE,spinner,FALSE
+detail.linked.mask.splitter.detail.spinner|text,Lädt...,FALSE,Loading...,FALSE,Loading...,FALSE,Ladataan…,FALSE,Laddar...,FALSE,,FALSE,Loading...,FALSE,Loading...,FALSE
+detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s (luotu automaattisesti),FALSE,%(objecttype)s (automatiskt genererad),FALSE,,FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE
+detail.linked.mask.splitter.name,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Display of references,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,,FALSE,Display of references,FALSE,Display of references,FALSE
+detail.linked.mask.splitter.options.mode,Anzeigeart,FALSE,Mode,FALSE,Mode,FALSE,Näyttötapa,FALSE,Visningstyp,FALSE,,FALSE,Mode,FALSE,Mode,FALSE
+detail.linked.mask.splitter.options.mode.short,Kurz,FALSE,Short,FALSE,Short,FALSE,Lyhyt,FALSE,Kort,FALSE,,FALSE,Short,FALSE,Short,FALSE
+detail.linked.mask.splitter.options.mode.standard,Standard,FALSE,Standard,FALSE,Standard,FALSE,Oletus,FALSE,Standard,FALSE,,FALSE,Standard,FALSE,Standard,FALSE
+detail.linked.mask.splitter.options.mode.text,Text,FALSE,Text,FALSE,Text,FALSE,Teksti,FALSE,Text,FALSE,,FALSE,Text,FALSE,Text,FALSE
+detail.linked.mask.splitter.options.objecttypes,Objekttypen,FALSE,Object types,FALSE,Object types,FALSE,Objektityypit,FALSE,Objekttyper,FALSE,,FALSE,Objecttypes,FALSE,Objecttypes,FALSE
+detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Display of references,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,,FALSE,Display of references,FALSE,Display of references,FALSE
