@@ -3,7 +3,8 @@ plugin:
   version: 1.0
   url: https://github.com/programmfabrik/easydb-custom-mask-splitter-detail-linked-plugin
   displayname:
-    en-US: Detail Linked custom mask splitter
+    en-US: "Custom Mask Splitter: Show References"
+    de-DE: "Custom Mask Splitter: Anzeige von Verlinkungen"
   info:
     en-US: Custom mask splitter that shows a list of all objects that reference the object shown in the detail
   server:
