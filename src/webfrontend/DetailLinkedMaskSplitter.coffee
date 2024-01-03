@@ -40,6 +40,12 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 					data.objecttypes.push(table.name)
 				return
 		]
+		if ez5.version("6")
+			options.push
+				form:
+					label: $$("detail.linked.mask.splitter.options.include_inherited")
+				type: CUI.Checkbox
+				name: "include_inherited"
 		return options
 
 	getDefaultOptions: ->
@@ -205,6 +211,16 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 			if table.owned_by
 				nestedName = @__getNestedLinkedFieldName(table)
 				fieldName = "#{nestedName}#{fieldName}"
+
+			if ez5.version("6") and not @getDataOptions().include_inherited and field.isInherited()
+				# On Fylr we have inheritance on fields, so we add the fields name that support inheritance to the list.
+				# We only need this when we dont want to include inherited fields. Because we need to do a complex search
+				# to exclude the inherited fields.
+				# If we want to include inherited fields we dont need to do a complex search. Because the normal search will
+				# return the inherited fields.
+				fn = fieldName.replace("._global_object_id", "")
+				linkedFieldNames.push("#{fn}:inherited")
+
 			linkedFieldNames.push(fieldName)
 		return linkedFieldNames
 
@@ -213,8 +229,37 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 		objecttypes = []
 
+		inheritedLinkeds = []
 		for linkedFieldName in linkedFieldNames
 			objecttypes.push(linkedFieldName.substring(0, linkedFieldName.indexOf(".")))
+
+			if ez5.version("6") and linkedFieldName.indexOf(":inherited") > -1
+				inheritedLinkeds.push(linkedFieldName)
+
+		if inheritedLinkeds.length > 0
+			for inheritedLinked in inheritedLinkeds
+				# Remove the inheritedLinked element from linkedFieldName
+				linkedFieldNames.splice(linkedFieldNames.indexOf(inheritedLinked), 1)
+			# If we have inherited linked fields we need to do a complex search.
+			# We need to search for the globalObjectId in the linkedFieldNames and
+			# exclude the linkedFields that the value is inherited.
+			return ez5.api.search
+				json_data:
+					format: mode
+					objecttypes: objecttypes
+					search: [
+						type: "complex"
+						bool: "must"
+						search: [
+							type: "in"
+							fields: linkedFieldNames
+							in: [globalObjectId]
+						,
+							type: "in"
+							fields: inheritedLinkeds
+							in: [false]
+						]
+					]
 
 		return ez5.api.search
 			json_data:

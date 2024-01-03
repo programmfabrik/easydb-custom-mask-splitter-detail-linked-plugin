@@ -9,3 +9,4 @@ detail.linked.mask.splitter.options.mode.standard,Standard,FALSE,Standard,FALSE,
 detail.linked.mask.splitter.options.mode.text,Text,FALSE,Text,FALSE,Text,FALSE,Teksti,FALSE,Text,FALSE,,FALSE,Text,FALSE,Text,FALSE
 detail.linked.mask.splitter.options.objecttypes,Objekttypen,FALSE,Object types,FALSE,Object types,FALSE,Objektityypit,FALSE,Objekttyper,FALSE,,FALSE,Objecttypes,FALSE,Objecttypes,FALSE
 detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Display of references,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,,FALSE,Display of references,FALSE,Display of references,FALSE
+detail.linked.mask.splitter.options.include_inherited,Erbliches einschlie,TRUE,Include Inherited,TRUE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
