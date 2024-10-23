@@ -1,6 +1,6 @@
 plugin:
   name: custom-mask-splitter-detail-linked
-  version: 1.0
+  version: 1.1
   url: https://github.com/programmfabrik/easydb-custom-mask-splitter-detail-linked-plugin
   displayname:
     en-US: "Custom Mask Splitter: Show References"
