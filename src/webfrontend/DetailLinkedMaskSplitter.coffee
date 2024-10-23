@@ -69,39 +69,37 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		idTable = ez5.schema.CURRENT._objecttype_by_name[objecttype].table_id
 		linkedFieldNames = @__getLinkedFieldNames(idTable, dataOptions.objecttypes)
 
-		if linkedFieldNames.length == 0
+		if CUI.util.isEmpty(linkedFieldNames)
 			return
 
 		mainContent = CUI.dom.div("ez5-detail-linked-mask-splitter-content")
 		spinner = new LocaLabel(loca_key: "detail.linked.mask.splitter.detail.spinner")
 		CUI.dom.append(mainContent, spinner)
 
-		@__searchByLinkedFieldNames(linkedFieldNames, globalObjectId, dataOptions.mode).done((data) =>
+		@__searchByLinkedFieldNames(linkedFieldNames, globalObjectId, dataOptions.mode).done((dataByObjecttype) =>
 			CUI.dom.empty(mainContent)
-			if data.objects.length == 0
-				return
 
-			objectsByObjecttype = {}
+			for data in dataByObjecttype
+				if data.objects.length == 0
+					continue
 
-			# Order the objects alphabetically by the standard text.
-			data.objects.sort( (a,b) =>
-				standardNameA = ez5.loca.getBestFrontendValue(a._standard?["1"]?.text)
-				standardNameB = ez5.loca.getBestFrontendValue(b._standard?["1"]?.text)
-				if standardNameA and standardNameB
-					return standardNameA.localeCompare(standardNameB)
-				return 0
-			)
-			console.log data.objects
-			for object in data.objects
-				resultObject = new ResultObject().setData(object)
-				objecttype = resultObject.objecttypeLocalized()
-				if not objectsByObjecttype[objecttype]
-					objectsByObjecttype[objecttype] = []
-				objectsByObjecttype[objecttype].push(resultObject)
+				# Order the objects alphabetically by the standard text.
+				data.objects.sort( (a,b) =>
+					standardNameA = ez5.loca.getBestFrontendValue(a._standard?["1"]?.text)
+					standardNameB = ez5.loca.getBestFrontendValue(b._standard?["1"]?.text)
+					if standardNameA and standardNameB
+						return standardNameA.localeCompare(standardNameB)
+					return 0
+				)
 
-			for objecttype, resultObjects of objectsByObjecttype
+				objecttype = data.objecttypes[0]
+				resultObjects = []
+				for object in data.objects
+					resultObjects.push(new ResultObject().setData(object))
+
 				content = @__renderObjects(objecttype, resultObjects, dataOptions.mode, opts)
 				CUI.dom.append(mainContent, content)
+
 			return
 		).fail((err) =>
 			# Should we do something else when there is an error?
@@ -188,7 +186,7 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		return content
 
 	__getLinkedFieldNames: (idTable, objecttypes = []) ->
-		linkedFieldNames = []
+		linkedFieldNames = {}
 
 		objecttypeManager = new ObjecttypeManager()
 		objecttypeManager.addObjecttypes((table, mask) =>
@@ -207,10 +205,13 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 				continue
 
 			table = field.table.schema
-			fieldName = "#{table.name}.#{columnSchema.name}._global_object_id"
+			table_name = table.name
+			fieldName = "#{table_name}.#{columnSchema.name}._global_object_id"
 			if table.owned_by
 				nestedName = @__getNestedLinkedFieldName(table)
 				fieldName = "#{nestedName}#{fieldName}"
+
+			objecttype = fieldName.split(".")[0] # The first string on the field name is the objecttype
 
 			if ez5.version("6") and not @getDataOptions().include_inherited and field.isInherited()
 				# On Fylr we have inheritance on fields, so we add the fields name that support inheritance to the list.
@@ -219,57 +220,82 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 				# If we want to include inherited fields we dont need to do a complex search. Because the normal search will
 				# return the inherited fields.
 				fn = fieldName.replace("._global_object_id", "")
-				linkedFieldNames.push("#{fn}:inherited")
+				linkedFieldNames[objecttype] ?= []
+				linkedFieldNames[objecttype].push("#{fn}:inherited")
 
-			linkedFieldNames.push(fieldName)
+			linkedFieldNames[objecttype] ?= []
+			linkedFieldNames[objecttype].push(fieldName)
 		return linkedFieldNames
 
-	__searchByLinkedFieldNames: (linkedFieldNames, globalObjectId, mode) ->
+	__searchByLinkedFieldNames: (linkedFieldNamesPerObjecttype, globalObjectId, mode) ->
+		dfr = new CUI.Deferred()
+		searches = []
+		results = []
 		mode = if mode == "text" then "long" else mode
 
-		objecttypes = []
+		for objecttype, linkedFieldNames of linkedFieldNamesPerObjecttype
 
-		inheritedLinkeds = []
-		for linkedFieldName in linkedFieldNames
-			objecttypes.push(linkedFieldName.substring(0, linkedFieldName.indexOf(".")))
+			inheritedLinkeds = []
+			for linkedFieldName in linkedFieldNames
+				if ez5.version("6") and linkedFieldName.indexOf(":inherited") > -1
+					inheritedLinkeds.push(linkedFieldName)
 
-			if ez5.version("6") and linkedFieldName.indexOf(":inherited") > -1
-				inheritedLinkeds.push(linkedFieldName)
-
-		if inheritedLinkeds.length > 0
-			for inheritedLinked in inheritedLinkeds
-				# Remove the inheritedLinked element from linkedFieldName
-				linkedFieldNames.splice(linkedFieldNames.indexOf(inheritedLinked), 1)
-			# If we have inherited linked fields we need to do a complex search.
-			# We need to search for the globalObjectId in the linkedFieldNames and
-			# exclude the linkedFields that the value is inherited.
-			return ez5.api.search
-				json_data:
-					format: mode
-					objecttypes: objecttypes
-					search: [
-						type: "complex"
-						bool: "must"
+			if inheritedLinkeds.length > 0
+				for inheritedLinked in inheritedLinkeds
+					# Remove the inheritedLinked element from linkedFieldName
+					linkedFieldNames.splice(linkedFieldNames.indexOf(inheritedLinked), 1)
+				# If we have inherited linked fields we need to do a complex search.
+				# We need to search for the globalObjectId in the linkedFieldNames and
+				# exclude the linkedFields that the value is inherited.
+				searchPromise = ez5.api.search
+					data:
+						debug: "DetailMaskSplitterSearch"
+					json_data:
+						limit: 1000
+						format: mode
+						objecttypes: [objecttype]
+						search: [
+							type: "complex"
+							bool: "must"
+							search: [
+								type: "in"
+								fields: linkedFieldNames
+								in: [globalObjectId]
+							,
+								type: "in"
+								fields: inheritedLinkeds
+								in: [false]
+							]
+						]
+				searchPromise.done( (result) =>
+					results.push(result)
+				)
+			else
+				searchPromise = ez5.api.search
+					data:
+						debug: "DetailMaskSplitterSearch"
+					json_data:
+						limit: 1000
+						format: mode
+						objecttypes: [objecttype]
 						search: [
 							type: "in"
 							fields: linkedFieldNames
 							in: [globalObjectId]
-						,
-							type: "in"
-							fields: inheritedLinkeds
-							in: [false]
 						]
-					]
+				searchPromise.done( (result) =>
+					results.push(result)
+				)
 
-		return ez5.api.search
-			json_data:
-				format: mode
-				objecttypes: objecttypes
-				search: [
-					type: "in"
-					fields: linkedFieldNames
-					in: [globalObjectId]
-				]
+			searches.push(searchPromise)
+
+		CUI.when(searches).done( =>
+			dfr.resolve(results)
+		).fail((err) =>
+			dfr.reject(err)
+		)
+
+		return dfr.promise()
 
 	__getObjecttypesWithLinkToTable: (idTable) ->
 		objecttypes = []
