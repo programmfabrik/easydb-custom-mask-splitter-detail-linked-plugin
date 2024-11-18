@@ -1,12 +1,12 @@
 key,de-DE,R,en-US,R,da-DK,R,fi-FI,R,sv-SE,R,fr-FR,R,it-IT,R,es-ES,R
-detail.linked.mask.splitter.detail.spinner|icon,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,,FALSE,spinner,FALSE,spinner,FALSE
-detail.linked.mask.splitter.detail.spinner|text,Lädt...,FALSE,Loading...,FALSE,Loading...,FALSE,Ladataan…,FALSE,Laddar...,FALSE,,FALSE,Loading...,FALSE,Loading...,FALSE
-detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s (luotu automaattisesti),FALSE,%(objecttype)s (automatiskt genererad),FALSE,,FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE
-detail.linked.mask.splitter.name,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Display of references,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,,FALSE,Display of references,FALSE,Display of references,FALSE
-detail.linked.mask.splitter.options.mode,Anzeigeart,FALSE,Mode,FALSE,Mode,FALSE,Näyttötapa,FALSE,Visningstyp,FALSE,,FALSE,Mode,FALSE,Mode,FALSE
-detail.linked.mask.splitter.options.mode.short,Kurz,FALSE,Short,FALSE,Short,FALSE,Lyhyt,FALSE,Kort,FALSE,,FALSE,Short,FALSE,Short,FALSE
-detail.linked.mask.splitter.options.mode.standard,Standard,FALSE,Standard,FALSE,Standard,FALSE,Oletus,FALSE,Standard,FALSE,,FALSE,Standard,FALSE,Standard,FALSE
-detail.linked.mask.splitter.options.mode.text,Text,FALSE,Text,FALSE,Text,FALSE,Teksti,FALSE,Text,FALSE,,FALSE,Text,FALSE,Text,FALSE
-detail.linked.mask.splitter.options.objecttypes,Objekttypen,FALSE,Object types,FALSE,Object types,FALSE,Objektityypit,FALSE,Objekttyper,FALSE,,FALSE,Objecttypes,FALSE,Objecttypes,FALSE
-detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Display of references,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,,FALSE,Display of references,FALSE,Display of references,FALSE
-detail.linked.mask.splitter.options.include_inherited,Erbliches einschlie,TRUE,Include Inherited,TRUE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.detail.spinner|icon,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE
+detail.linked.mask.splitter.detail.spinner|text,Lädt...,FALSE,Loading...,FALSE,Loading...,FALSE,Ladataan…,FALSE,Laddar...,FALSE,Chargement...,FALSE,Loading...,FALSE,Loading...,FALSE
+detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s (luotu automaattisesti),FALSE,%(objecttype)s (automatiskt genererad),FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE
+detail.linked.mask.splitter.name,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Display of references,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,Affichage des références,FALSE,Display of references,FALSE,Display of references,FALSE
+detail.linked.mask.splitter.options.mode,Anzeigeart,FALSE,Mode,FALSE,Mode,FALSE,Näyttötapa,FALSE,Visningstyp,FALSE,Mode,FALSE,Mode,FALSE,Mode,FALSE
+detail.linked.mask.splitter.options.mode.short,Kurz,FALSE,Short,FALSE,Short,FALSE,Lyhyt,FALSE,Kort,FALSE,Court,FALSE,Short,FALSE,Short,FALSE
+detail.linked.mask.splitter.options.mode.standard,Standard,FALSE,Standard,FALSE,Standard,FALSE,Oletus,FALSE,Standard,FALSE,Standard,FALSE,Standard,FALSE,Standard,FALSE
+detail.linked.mask.splitter.options.mode.text,Text,FALSE,Text,FALSE,Text,FALSE,Teksti,FALSE,Text,FALSE,Texte,FALSE,Text,FALSE,Text,FALSE
+detail.linked.mask.splitter.options.objecttypes,Objekttypen,FALSE,Object types,FALSE,Object types,FALSE,Objektityypit,FALSE,Objekttyper,FALSE,Types d'objets,FALSE,Objecttypes,FALSE,Objecttypes,FALSE
+detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Display of references,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,Affichage des références,FALSE,Display of references,FALSE,Display of references,FALSE
+detail.linked.mask.splitter.options.include_inherited,Vererbte Informationen einschließen,TRUE,Include Inherited Data,TRUE,,FALSE,,FALSE,Inkludera ärvd data,TRUE,Inclure les éléments hérités,FALSE,,FALSE,,FALSE

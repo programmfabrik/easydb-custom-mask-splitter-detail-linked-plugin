@@ -97,7 +97,9 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 				for object in data.objects
 					resultObjects.push(new ResultObject().setData(object))
 
-				content = @__renderObjects(objecttype, resultObjects, dataOptions.mode, opts)
+				localized_objecttype = resultObjects[0]?.objecttypeLocalized()
+
+				content = @__renderObjects(localized_objecttype, resultObjects, dataOptions.mode, opts)
 				CUI.dom.append(mainContent, content)
 
 			return
