@@ -46,6 +46,11 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 					label: $$("detail.linked.mask.splitter.options.include_inherited")
 				type: CUI.Checkbox
 				name: "include_inherited"
+			options.push
+				form:
+					label: $$("detail.linked.mask.splitter.options.show_fields")
+				type: CUI.Checkbox
+				name: "show_fields"
 		return options
 
 	getDefaultOptions: ->
@@ -76,8 +81,24 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		spinner = new LocaLabel(loca_key: "detail.linked.mask.splitter.detail.spinner")
 		CUI.dom.append(mainContent, spinner)
 
+		showFields = ez5.version("6") and dataOptions.show_fields
+
 		@__searchByLinkedFieldNames(linkedFieldNames, globalObjectId, dataOptions.mode).done((dataByObjecttype) =>
 			CUI.dom.empty(mainContent)
+
+			# Sort results by objecttype (and field if show_fields is enabled)
+			dataByObjecttype.sort((a, b) =>
+				objecttypeA = a.objecttypes?[0] or ""
+				objecttypeB = b.objecttypes?[0] or ""
+				cmp = objecttypeA.localeCompare(objecttypeB)
+				if cmp != 0
+					return cmp
+				if showFields
+					fieldA = a._fieldLocalizedName or ""
+					fieldB = b._fieldLocalizedName or ""
+					return fieldA.localeCompare(fieldB)
+				return 0
+			)
 
 			for data in dataByObjecttype
 				if data.objects.length == 0
@@ -99,7 +120,8 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 				localized_objecttype = resultObjects[0]?.objecttypeLocalized()
 
-				content = @__renderObjects(localized_objecttype, resultObjects, dataOptions.mode, opts)
+				fieldLocalizedName = if showFields then data._fieldLocalizedName else null
+				content = @__renderObjects(localized_objecttype, resultObjects, dataOptions.mode, opts, fieldLocalizedName)
 				CUI.dom.append(mainContent, content)
 
 			return
@@ -111,11 +133,14 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 		return mainContent
 
-	__renderObjects: (objecttype, resultObjects, mode, opts = {}) ->
+	__renderObjects: (objecttype, resultObjects, mode, opts = {}, fieldLocalizedName = null) ->
 		objecttypeHeader = CUI.dom.div("ez5-field-block-header")
 		objectsContent = CUI.dom.div("ez5-field-block-content")
 
-		label = new CUI.Label(text: $$("detail.linked.mask.splitter.header.objecttype.title", objecttype: objecttype))
+		if fieldLocalizedName
+			label = new CUI.Label(text: $$("detail.linked.mask.splitter.header.objecttype.field.title", objecttype: objecttype, field: fieldLocalizedName))
+		else
+			label = new CUI.Label(text: $$("detail.linked.mask.splitter.header.objecttype.title", objecttype: objecttype))
 		CUI.dom.append(objecttypeHeader, label)
 
 		limit = ez5.DetailLinkedMaskSplitter.NAVIGATION_LIMIT
@@ -189,6 +214,7 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 
 	__getLinkedFieldNames: (idTable, objecttypes = []) ->
 		linkedFieldNames = {}
+		showFields = ez5.version("6") and @getDataOptions().show_fields
 
 		objecttypeManager = new ObjecttypeManager()
 		objecttypeManager.addObjecttypes((table, mask) =>
@@ -213,20 +239,27 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 				nestedName = @__getNestedLinkedFieldName(table)
 				fieldName = "#{nestedName}#{fieldName}"
 
-			objecttype = fieldName.split(".")[0] # The first string on the field name is the objecttype
+			objecttype = fieldName.split(".")[0]
+
+			# Get field localized name for show_fields mode
+			fieldLocalizedName = null
+			if showFields
+				fieldLocalizedName = field.nameLocalized()
 
 			if ez5.version("6") and not @getDataOptions().include_inherited and field.isInherited()
-				# On Fylr we have inheritance on fields, so we add the fields name that support inheritance to the list.
-				# We only need this when we dont want to include inherited fields. Because we need to do a complex search
-				# to exclude the inherited fields.
-				# If we want to include inherited fields we dont need to do a complex search. Because the normal search will
-				# return the inherited fields.
 				fn = fieldName.replace("._global_object_id", "")
 				linkedFieldNames[objecttype] ?= []
-				linkedFieldNames[objecttype].push("#{fn}:inherited")
+				linkedFieldNames[objecttype].push
+					fieldName: "#{fn}:inherited"
+					localizedName: fieldLocalizedName
+					isInherited: true
 
 			linkedFieldNames[objecttype] ?= []
-			linkedFieldNames[objecttype].push(fieldName)
+			linkedFieldNames[objecttype].push
+				fieldName: fieldName
+				localizedName: fieldLocalizedName
+				isInherited: false
+
 		return linkedFieldNames
 
 	__searchByLinkedFieldNames: (linkedFieldNamesPerObjecttype, globalObjectId, mode) ->
@@ -234,62 +267,108 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		searches = []
 		results = []
 		mode = if mode == "text" then "long" else mode
+		showFields = ez5.version("6") and @getDataOptions().show_fields
 
-		for objecttype, linkedFieldNames of linkedFieldNamesPerObjecttype
-
+		for objecttype, linkedFieldInfos of linkedFieldNamesPerObjecttype
 			inheritedLinkeds = []
-			for linkedFieldName in linkedFieldNames
-				if ez5.version("6") and linkedFieldName.indexOf(":inherited") > -1
-					inheritedLinkeds.push(linkedFieldName)
+			regularFields = []
+			fieldLocalizedNames = {}
 
-			if inheritedLinkeds.length > 0
-				for inheritedLinked in inheritedLinkeds
-					# Remove the inheritedLinked element from linkedFieldName
-					linkedFieldNames.splice(linkedFieldNames.indexOf(inheritedLinked), 1)
-				# If we have inherited linked fields we need to do a complex search.
-				# We need to search for the globalObjectId in the linkedFieldNames and
-				# exclude the linkedFields that the value is inherited.
-				searchPromise = ez5.api.search
-					data:
-						debug: "DetailMaskSplitterSearch"
-					json_data:
+			for fieldInfo in linkedFieldInfos
+				if fieldInfo.isInherited
+					inheritedLinkeds.push(fieldInfo.fieldName)
+				else
+					regularFields.push(fieldInfo.fieldName)
+					if fieldInfo.localizedName
+						fieldLocalizedNames[fieldInfo.fieldName] = fieldInfo.localizedName
+
+			if showFields
+				# When show_fields is enabled, search per field individually
+				for fieldName in regularFields
+					inheritedFieldName = fieldName.replace("._global_object_id", "") + ":inherited"
+					hasInheritedField = inheritedFieldName in inheritedLinkeds
+
+					searchData =
 						limit: 1000
 						format: mode
 						objecttypes: [objecttype]
-						search: [
+
+					if hasInheritedField
+						searchData.search = [
 							type: "complex"
 							bool: "must"
 							search: [
 								type: "in"
-								fields: linkedFieldNames
+								fields: [fieldName]
 								in: [globalObjectId]
 							,
 								type: "in"
-								fields: inheritedLinkeds
+								fields: [inheritedFieldName]
 								in: [false]
 							]
 						]
-				searchPromise.done( (result) =>
-					results.push(result)
-				)
-			else
-				searchPromise = ez5.api.search
-					data:
-						debug: "DetailMaskSplitterSearch"
-					json_data:
-						limit: 1000
-						format: mode
-						objecttypes: [objecttype]
-						search: [
+					else
+						searchData.search = [
 							type: "in"
-							fields: linkedFieldNames
+							fields: [fieldName]
 							in: [globalObjectId]
 						]
-				searchPromise.done( (result) =>
-					results.push(result)
-				)
 
-			searches.push(searchPromise)
+					do (fieldName, fieldLocalizedNames) =>
+						searchPromise = ez5.api.search
+							data:
+								debug: "DetailMaskSplitterSearch"
+							json_data: searchData
+						searchPromise.done((result) =>
+							result._fieldName = fieldName
+							result._fieldLocalizedName = fieldLocalizedNames[fieldName]
+							results.push(result)
+						)
+						searches.push(searchPromise)
+			else
+				# Original behavior: search all fields together per objecttype
+				if inheritedLinkeds.length > 0
+					searchPromise = ez5.api.search
+						data:
+							debug: "DetailMaskSplitterSearch"
+						json_data:
+							limit: 1000
+							format: mode
+							objecttypes: [objecttype]
+							search: [
+								type: "complex"
+								bool: "must"
+								search: [
+									type: "in"
+									fields: regularFields
+									in: [globalObjectId]
+								,
+									type: "in"
+									fields: inheritedLinkeds
+									in: [false]
+								]
+							]
+					searchPromise.done((result) =>
+						results.push(result)
+					)
+				else
+					searchPromise = ez5.api.search
+						data:
+							debug: "DetailMaskSplitterSearch"
+						json_data:
+							limit: 1000
+							format: mode
+							objecttypes: [objecttype]
+							search: [
+								type: "in"
+								fields: regularFields
+								in: [globalObjectId]
+							]
+					searchPromise.done((result) =>
+						results.push(result)
+					)
+
+				searches.push(searchPromise)
 
 		CUI.when(searches).done( =>
 			dfr.resolve(results)
