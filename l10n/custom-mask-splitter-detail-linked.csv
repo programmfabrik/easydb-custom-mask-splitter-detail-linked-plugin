@@ -2,7 +2,7 @@ key,de-DE,R,en-US,R,da-DK,R,fi-FI,R,sv-SE,R,fr-FR,R,it-IT,R,es-ES,R
 detail.linked.mask.splitter.detail.spinner|icon,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE,spinner,FALSE
 detail.linked.mask.splitter.detail.spinner|text,Lädt...,FALSE,Loading...,FALSE,Indlæser...,FALSE,Ladataan…,FALSE,Laddar...,FALSE,Chargement...,FALSE,Loading...,FALSE,Loading...,FALSE
 detail.linked.mask.splitter.header.objecttype.title,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s (luotu automaattisesti),FALSE,%(objecttype)s (automatiskt genererad),FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE,%(objecttype)s,FALSE
-detail.linked.mask.splitter.header.objecttype.field.title,,FALSE,%(objecttype)s - %(field)s,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.header.objecttype.field.title,,FALSE,%(field)s (in %(objecttype)s),FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
 detail.linked.mask.splitter.name,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Visning af referencer,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,Affichage des références,FALSE,Display of references,FALSE,Display of references,FALSE
 detail.linked.mask.splitter.options.mode,Anzeigeart,FALSE,Mode,FALSE,Tilstand,FALSE,Näyttötapa,FALSE,Visningstyp,FALSE,Mode,FALSE,Mode,FALSE,Mode,FALSE
 detail.linked.mask.splitter.options.mode.short,Kurz,FALSE,Short,FALSE,Kort,FALSE,Lyhyt,FALSE,Kort,FALSE,Court,FALSE,Short,FALSE,Short,FALSE
@@ -11,7 +11,7 @@ detail.linked.mask.splitter.options.mode.text,Text,FALSE,Text,FALSE,Tekst,FALSE,
 detail.linked.mask.splitter.options.objecttypes,Objekttypen,FALSE,Object types,FALSE,Objekttype,FALSE,Objektityypit,FALSE,Objekttyper,FALSE,Types d'objets,FALSE,Objecttypes,FALSE,Objecttypes,FALSE
 detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Visning af referencer,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,Affichage des références,FALSE,Display of references,FALSE,Display of references,FALSE
 detail.linked.mask.splitter.options.include_inherited,Vererbte Informationen einschließen,TRUE,Include Inherited Data,TRUE,,FALSE,Sisällytä peritty data,FALSE,Inkludera ärvd data,TRUE,Inclure les éléments hérités,FALSE,,FALSE,,FALSE
-detail.linked.mask.splitter.options.show_fields	,,FALSE,Show Fields	,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.show_fields	,,TRUE,Show Fields	,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
 ,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
 ,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
 ,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE

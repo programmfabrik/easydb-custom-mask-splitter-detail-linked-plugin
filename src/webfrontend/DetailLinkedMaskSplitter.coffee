@@ -137,11 +137,13 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		objecttypeHeader = CUI.dom.div("ez5-field-block-header")
 		objectsContent = CUI.dom.div("ez5-field-block-content")
 
+		titleDiv = CUI.dom.div("ez5-field-block-title")
 		if fieldLocalizedName
-			label = new CUI.Label(text: $$("detail.linked.mask.splitter.header.objecttype.field.title", objecttype: objecttype, field: fieldLocalizedName))
+			label = new CUI.Label(text: $$("detail.linked.mask.splitter.header.objecttype.field.title", objecttype: objecttype, field: fieldLocalizedName), class: "ez5-field-label")
 		else
-			label = new CUI.Label(text: $$("detail.linked.mask.splitter.header.objecttype.title", objecttype: objecttype))
-		CUI.dom.append(objecttypeHeader, label)
+			label = new CUI.Label(text: $$("detail.linked.mask.splitter.header.objecttype.title", objecttype: objecttype), class: "ez5-field-label")
+		CUI.dom.append(titleDiv, label)
+		CUI.dom.append(objecttypeHeader, titleDiv)
 
 		limit = ez5.DetailLinkedMaskSplitter.NAVIGATION_LIMIT
 		length = resultObjects.length
