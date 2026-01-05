@@ -13,6 +13,7 @@ When viewing an object in detail mode, this plugin automatically searches for an
 - **Object Type Filtering**: Select which object types to search for references
 - **Field-Level Grouping** (Fylr only): Optionally group references by the specific field that contains the link
 - **Inheritance Control** (Fylr only): Option to include or exclude inherited field values
+- **Custom Sorting** (Fylr only): Configure sort order per object type with multiple field options
 - **Pagination**: Built-in pagination for large result sets (10 items per page)
 - **Nested Field Support** (Fylr only): Searches through nested table structures
 
@@ -60,6 +61,7 @@ When viewing an object in detail mode, this plugin automatically searches for an
 | **Object Types** | Select which object types to search for references | All platforms |
 | **Include Inherited Data** | Include references from inherited field values | Fylr only |
 | **Show Fields** | Group references by the specific field containing the link | Fylr only |
+| **Sort Configuration** | Configure custom sorting per object type | Fylr only |
 
 ### Display Modes
 
@@ -78,6 +80,25 @@ When enabled, references are grouped not only by object type but also by the spe
 **Example**: If "Document" has two fields linking to "Person" (Author and Reviewer), enabling "Show Fields" will display:
 - Document (Author): List of documents where this person is the author
 - Document (Reviewer): List of documents where this person is a reviewer
+
+### Sort Configuration (Fylr only)
+
+Allows you to define custom sorting for each object type's references. By default, references are sorted alphabetically by their standard text representation. With Sort Configuration, you can override this per object type.
+
+**Available sort options:**
+- **Default (Standard Text)**: Alphabetical sorting by the object's display text
+- **System Object ID**: Sort by internal system ID
+- **Created**: Sort by creation date
+- **Last Modified**: Sort by last modification date
+- **Custom fields**: Any sortable field from the object type's mask
+
+**Configuration:**
+1. Click the "+" button in the Sort Configuration table
+2. Select an object type (each object type can only be configured once)
+3. Choose the field to sort by
+4. Select the sort order (Ascending or Descending)
+
+**Note**: Object types not configured in the sort table will use the default alphabetical sorting.
 
 ## Technical Details
 
