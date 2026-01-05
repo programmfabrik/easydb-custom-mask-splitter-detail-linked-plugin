@@ -11,8 +11,18 @@ detail.linked.mask.splitter.options.mode.text,Text,FALSE,Text,FALSE,Tekst,FALSE,
 detail.linked.mask.splitter.options.objecttypes,Objekttypen,FALSE,Object types,FALSE,Objekttype,FALSE,Objektityypit,FALSE,Objekttyper,FALSE,Types d'objets,FALSE,Objecttypes,FALSE,Objecttypes,FALSE
 detail.linked.mask.splitter.title|text,Anzeige von Verlinkungen,FALSE,Display of references,FALSE,Visning af referencer,FALSE,Linkkien näyttö,FALSE,Visning av länkar,FALSE,Affichage des références,FALSE,Display of references,FALSE,Display of references,FALSE
 detail.linked.mask.splitter.options.include_inherited,Vererbte Informationen einschließen,TRUE,Include Inherited Data,TRUE,,FALSE,Sisällytä peritty data,FALSE,Inkludera ärvd data,TRUE,Inclure les éléments hérités,FALSE,,FALSE,,FALSE
-detail.linked.mask.splitter.options.show_fields	,,TRUE,Show Fields	,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
-,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
-,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
-,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
-,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.show_fields	,Nach Feldern gruppieren,TRUE,Group by Fields,FALSE,,FALSE,,FALSE,,FALSE,Grouper par champs,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_config,Sortierung,FALSE,Sort Configuration,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_config.objecttype,Objekttyp,FALSE,Object Type,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_config.field,Feld,FALSE,Field,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_config.order,Reihenfolge,FALSE,Order,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_field.default,Standard (Standardtext),FALSE,Default (Standard Text),FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_field.system_object_id,System-Objekt-ID,FALSE,System Object ID,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_field.created,Erstellt,FALSE,Created,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_field.last_modified,Zuletzt geändert,FALSE,Last Modified,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_order.asc,Aufsteigend,FALSE,Ascending,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_order.desc,Absteigend,FALSE,Descending,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_field.standard_1,,FALSE,Standard A,TRUE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_field.standard_2,,FALSE,Standard B,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_field.standard_3,,FALSE,Standard C,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE
+detail.linked.mask.splitter.options.sort_config.objecttype.empty,Objekttyp auswählen,FALSE,Select Object Type,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE,,FALSE

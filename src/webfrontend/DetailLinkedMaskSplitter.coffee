@@ -51,6 +51,8 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 					label: $$("detail.linked.mask.splitter.options.show_fields")
 				type: CUI.Checkbox
 				name: "show_fields"
+
+			options.push(@__getSortDataTableField())
 		return options
 
 	getDefaultOptions: ->
@@ -100,20 +102,28 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 				return 0
 			)
 
+			# Build set of objecttypes with sort configured
+			objecttypesWithSort = {}
+			if ez5.version("6") and dataOptions.sort_config
+				for sortEntry in dataOptions.sort_config
+					if sortEntry.objecttype and sortEntry.field and sortEntry.field != ""
+						objecttypesWithSort[sortEntry.objecttype] = true
+
 			for data in dataByObjecttype
 				if data.objects.length == 0
 					continue
 
-				# Order the objects alphabetically by the standard text.
-				data.objects.sort( (a,b) =>
-					standardNameA = ez5.loca.getBestFrontendValue(a._standard?["1"]?.text)
-					standardNameB = ez5.loca.getBestFrontendValue(b._standard?["1"]?.text)
-					if standardNameA and standardNameB
-						return standardNameA.localeCompare(standardNameB)
-					return 0
-				)
-
 				objecttype = data.objecttypes[0]
+
+				# Order the objects alphabetically by the standard text (only if no server-side sort is configured for this objecttype)
+				if not objecttypesWithSort[objecttype]
+					data.objects.sort( (a,b) =>
+						standardNameA = ez5.loca.getBestFrontendValue(a._standard?["1"]?.text)
+						standardNameB = ez5.loca.getBestFrontendValue(b._standard?["1"]?.text)
+						if standardNameA and standardNameB
+							return standardNameA.localeCompare(standardNameB)
+						return 0
+					)
 				resultObjects = []
 				for object in data.objects
 					resultObjects.push(new ResultObject().setData(object))
@@ -269,7 +279,18 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		searches = []
 		results = []
 		mode = if mode == "text" then "long" else mode
-		showFields = ez5.version("6") and @getDataOptions().show_fields
+		dataOptions = @getDataOptions()
+		showFields = ez5.version("6") and dataOptions.show_fields
+
+		# Build sort configuration map by objecttype
+		sortConfigByObjecttype = {}
+		if ez5.version("6") and dataOptions.sort_config
+			for sortEntry in dataOptions.sort_config
+				if sortEntry.objecttype and sortEntry.field and sortEntry.field != ""
+					sortConfigByObjecttype[sortEntry.objecttype] = [
+						field: sortEntry.field
+						order: sortEntry.order or "ASC"
+					]
 
 		for objecttype, linkedFieldInfos of linkedFieldNamesPerObjecttype
 			inheritedLinkeds = []
@@ -316,6 +337,9 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 							in: [globalObjectId]
 						]
 
+					if sortConfigByObjecttype[objecttype]
+						searchData.sort = sortConfigByObjecttype[objecttype]
+
 					do (fieldName, fieldLocalizedNames) =>
 						searchPromise = ez5.api.search
 							data:
@@ -329,46 +353,42 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 						searches.push(searchPromise)
 			else
 				# Original behavior: search all fields together per objecttype
+				searchData =
+					limit: 1000
+					format: mode
+					objecttypes: [objecttype]
+
 				if inheritedLinkeds.length > 0
-					searchPromise = ez5.api.search
-						data:
-							debug: "DetailMaskSplitterSearch"
-						json_data:
-							limit: 1000
-							format: mode
-							objecttypes: [objecttype]
-							search: [
-								type: "complex"
-								bool: "must"
-								search: [
-									type: "in"
-									fields: regularFields
-									in: [globalObjectId]
-								,
-									type: "in"
-									fields: inheritedLinkeds
-									in: [false]
-								]
-							]
-					searchPromise.done((result) =>
-						results.push(result)
-					)
+					searchData.search = [
+						type: "complex"
+						bool: "must"
+						search: [
+							type: "in"
+							fields: regularFields
+							in: [globalObjectId]
+						,
+							type: "in"
+							fields: inheritedLinkeds
+							in: [false]
+						]
+					]
 				else
-					searchPromise = ez5.api.search
-						data:
-							debug: "DetailMaskSplitterSearch"
-						json_data:
-							limit: 1000
-							format: mode
-							objecttypes: [objecttype]
-							search: [
-								type: "in"
-								fields: regularFields
-								in: [globalObjectId]
-							]
-					searchPromise.done((result) =>
-						results.push(result)
-					)
+					searchData.search = [
+						type: "in"
+						fields: regularFields
+						in: [globalObjectId]
+					]
+
+				if sortConfigByObjecttype[objecttype]
+					searchData.sort = sortConfigByObjecttype[objecttype]
+
+				searchPromise = ez5.api.search
+					data:
+						debug: "DetailMaskSplitterSearch"
+					json_data: searchData
+				searchPromise.done((result) =>
+					results.push(result)
+				)
 
 				searches.push(searchPromise)
 
@@ -379,6 +399,120 @@ class ez5.DetailLinkedMaskSplitter extends CustomMaskSplitter
 		)
 
 		return dfr.promise()
+
+	__getSortDataTableField: ->
+		getObjecttypeOptions = =>
+			# Check which objecttypes are already configured in sort_config
+			isAlreadyConfigured = (objecttypeName) =>
+				sortConfig = @_data?.options?.sort_config or []
+				return sortConfig.some((entry) => entry.objecttype == objecttypeName)
+
+			options = [
+				value: null
+				text: $$("detail.linked.mask.splitter.options.sort_config.objecttype.empty")
+			]
+			# Get objecttypes from the current data (selected in the objecttypes checkbox)
+			selectedObjecttypes = @_data?.options?.objecttypes or []
+			for objecttypeName in selectedObjecttypes
+				objecttype = ez5.schema.CURRENT._objecttype_by_name[objecttypeName]
+				if objecttype
+					options.push
+						value: objecttypeName
+						text: objecttype._name_localized or objecttypeName
+						disabled: isAlreadyConfigured(objecttypeName)
+			return options
+
+		getSortFieldOptions = (objecttypeName) =>
+			options = [
+				text: $$("detail.linked.mask.splitter.options.sort_field.default")
+				value: ""
+			,
+				text: $$("detail.linked.mask.splitter.options.sort_field.system_object_id")
+				value: "_system_object_id"
+			,
+				text: $$("detail.linked.mask.splitter.options.sort_field.created")
+				value: "_changelog.date_created"
+			,
+				text: $$("detail.linked.mask.splitter.options.sort_field.last_updated")
+				value: "_changelog.date_last_updated"
+			,
+				text: $$("detail.linked.mask.splitter.options.sort_field.standard_1")
+				value: "_standard.1.text"
+			,
+				text: $$("detail.linked.mask.splitter.options.sort_field.standard_2")
+				value: "_standard.2.text"
+			,
+				text: $$("detail.linked.mask.splitter.options.sort_field.standard_3")
+				value: "_standard.3.text"
+			]
+
+			if not objecttypeName
+				return options
+
+			# Get sortable fields for the objecttype
+			objecttype = ez5.schema.CURRENT._objecttype_by_name[objecttypeName]
+			if not objecttype
+				return options
+
+			mask = Mask.getMaskByMaskName("_all_fields", objecttype.table_id)
+			if not mask
+				return options
+
+			mask.invokeOnFields("all", true, (field) =>
+				if field instanceof MaskSplitter
+					return
+				if field.isTopLevelField() or field.isSystemField()
+					return
+				if not field.hasRenderForSort()
+					return
+				if not field.isVisibleSort?() and field.isVisibleSort?() == false
+					return
+
+				fieldName = "#{objecttypeName}.#{field.name()}"
+				options.push
+					text: field.nameLocalized()
+					value: fieldName
+			)
+
+			return options
+
+		return {
+			type: CUI.DataTable
+			name: "sort_config"
+			new_rows: "append"
+			form: label: $$("detail.linked.mask.splitter.options.sort_config")
+			fields: [
+				type: CUI.Select
+				form: label: $$("detail.linked.mask.splitter.options.sort_config.objecttype")
+				name: "objecttype"
+				options: getObjecttypeOptions
+				onDataChanged: (data, element) =>
+					# Update the field options when objecttype changes
+					form = element.getForm()
+					if form
+						fieldSelect = form.getFieldsByName("field")?[0]
+						if fieldSelect
+							fieldSelect.reload()
+			,
+				type: CUI.Select
+				form: label: $$("detail.linked.mask.splitter.options.sort_config.field")
+				name: "field"
+				options: (field) =>
+					data = field.getData()
+					return getSortFieldOptions(data?.objecttype)
+			,
+				type: CUI.Select
+				form: label: $$("detail.linked.mask.splitter.options.sort_config.order")
+				name: "order"
+				options: [
+					text: $$("detail.linked.mask.splitter.options.sort_order.asc")
+					value: "ASC"
+				,
+					text: $$("detail.linked.mask.splitter.options.sort_order.desc")
+					value: "DESC"
+				]
+			]
+		}
 
 	__getObjecttypesWithLinkToTable: (idTable) ->
 		objecttypes = []
